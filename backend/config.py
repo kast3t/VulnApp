@@ -8,7 +8,6 @@ pg_db = os.getenv("POSTGRES_DB")
 
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    JSON_AS_ASCII = False
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     JWT_TOKEN_LOCATION = "cookies"
     JWT_COOKIE_SAMESITE = "Lax"

@@ -36,14 +36,11 @@ def get_remote_top_password():
         raise Exception(err)
 
 
-def get_remote_content(url: str):
-    url = "https://raw.githubusercontent.com/kast3t/VulnApp_content/main" + url
+def get_content_from_file(path: str):
+    path = "/backend/entities" + path
     try:
-        req = r.get(url)
-        if req.status_code == r.codes.ok:
-            return req.content.decode("utf-8")
-        else:
-            raise Exception(f"Content wasn't received. Error code: {req.status_code} - {req.reason}")
+        with open(path, "r") as file:
+            return file.read()
     except Exception as err:
         raise Exception(err)
 
@@ -59,7 +56,7 @@ def deploy():
     db.drop_all()
     db.create_all()
 
-    users_dict = json.loads(get_remote_content("/txt/users.json"))
+    users_dict = json.loads(get_content_from_file("/txt/users.json"))
     users = []
     for user in users_dict:
         users.append(
@@ -71,7 +68,7 @@ def deploy():
     db.session.add_all(users)
     db.session.commit()
 
-    articles_dict = json.loads(get_remote_content("/txt/articles.json"))
+    articles_dict = json.loads(get_content_from_file("/txt/articles.json"))
     articles = []
     for article in articles_dict:
         articles.append(
@@ -84,7 +81,7 @@ def deploy():
     db.session.add_all(articles)
     db.session.commit()
 
-    comments_str_list = get_remote_content("/txt/comments.txt").splitlines()
+    comments_str_list = get_content_from_file("/txt/comments.txt").splitlines()
     random.shuffle(comments_str_list)
     comments = []
     for article in articles:

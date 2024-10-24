@@ -1,0 +1,7 @@
+backend/.idea
+backend/.venv
+backend/__pycache__
+backend/migrations
+nginx-frontend/node_modules
+.dockerignore
+*/Dockerfile

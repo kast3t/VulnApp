@@ -4,7 +4,7 @@ import { AuthAPI } from "./AuthAPI"
 
 // Если не удаётся поправить файл hosts на хостовой машине, необходимо "baseURL" заменить на "http://localhost/api"
 const axiosInstance = axios.create({
-  baseURL: "http://vulnapp.local/api",
+  baseURL: "http://vulnapp.lan/api",
   withCredentials: true,
 })
 

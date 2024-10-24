@@ -2,7 +2,9 @@ name: vuln_app
 
 services:
   backend:
-    build: './backend'
+    build:
+      context: '.'
+      dockerfile: './backend/Dockerfile'
     depends_on:
       - db
     env_file:
@@ -16,7 +18,9 @@ services:
     image: 'postgres:16-alpine'
     restart: 'always'
   nginx-frontend:
-    build: './nginx-frontend'
+    build:
+      context: '.'
+      dockerfile: './nginx-frontend/Dockerfile'
     depends_on:
       - backend
       - db
@@ -33,6 +37,7 @@ services:
     networks:
       default:
         ipv4_address: 172.172.0.52
+    restart: 'always'
 
 networks:
   default:

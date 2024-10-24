@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 def create_app(config_mode):
     appFlask = Flask(__name__)
+    appFlask.json.ensure_ascii = False
     appFlask.config.from_object(config[config_mode])
 
     db.init_app(appFlask)
