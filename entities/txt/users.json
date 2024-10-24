@@ -1,21 +1,21 @@
 [
   {
-    "email": "kostya@vulnapp.local",
+    "email": "kostya@vulnapp.lan",
     "username": "kostya",
     "is_admin": false
   },
   {
-    "email": "admin@vulnapp.local",
+    "email": "admin@vulnapp.lan",
     "username": "admin",
     "is_admin": true
   },
   {
-    "email": "student@urfu.me",
+    "email": "student@vulnapp.lan",
     "username": "student",
     "is_admin": false
   },
   {
-    "email": "editor@vulnapp.local",
+    "email": "editor@vulnapp.lan",
     "username": "editor",
     "is_admin": true
   }
