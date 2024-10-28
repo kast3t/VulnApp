@@ -55,7 +55,7 @@ class User(db.Model):
         return password
 
     @validates("is_admin")
-    def validate_password(self, key, is_admin):
+    def validate_is_admin(self, key, is_admin):
         if isinstance(is_admin, str) and (is_admin.lower() == "true" or is_admin == "1"):
             return True
         if isinstance(is_admin, str) and (is_admin.lower() == "false" or is_admin == "0"):
