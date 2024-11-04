@@ -3,7 +3,7 @@ import { AuthAPI } from "./AuthAPI"
 
 
 const axiosInstance = axios.create({
-  baseURL: "http://vulnapp.lan/api",
+  baseURL: "http://vulnapp.local/api",
   withCredentials: true,
 })
 
