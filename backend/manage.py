@@ -2,7 +2,6 @@ import datetime
 import json
 import os
 import random
-import requests as r
 import string
 from app import create_app, db
 from articles.models import Article
@@ -22,18 +21,11 @@ def get_random_datetime():
     return datetime.datetime.now() - datetime.timedelta(seconds=random_second)
 
 
-def get_remote_top_password():
-    url = ("https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/"
-           "Passwords/2023-200_most_used_passwords.txt")
-    try:
-        req = r.get(url)
-        if req.status_code == r.codes.ok:
-            passwords = req.content.decode("utf-8").splitlines()
-            return random.choice(passwords)
-        else:
-            raise Exception(f"Content wasn't received. Error code: {req.status_code} - {req.reason}")
-    except Exception as err:
-        raise Exception(err)
+def get_top_password():
+    # Original: https://github.com/danielmiessler/SecLists/blob/master/Passwords/2023-200_most_used_passwords.txt
+    passwords = get_content_from_file("/txt/2023-200_most_used_passwords.txt").splitlines()
+
+    return random.choice(passwords)
 
 
 def get_content_from_file(path: str):
@@ -62,7 +54,7 @@ def deploy():
         users.append(
             User(email=user["email"],
                  username=user["username"],
-                 password=generate_random_string() if user["username"] != "student" else get_remote_top_password(),
+                 password=generate_random_string() if user["username"] != "student" else get_top_password(),
                  is_admin=user["is_admin"])
         )
     db.session.add_all(users)
