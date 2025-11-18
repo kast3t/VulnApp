@@ -12,6 +12,7 @@ class Config:
     JWT_TOKEN_LOCATION = "cookies"
     JWT_COOKIE_SAMESITE = "Lax"
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     JWT_SESSION_COOKIE = False
     JWT_COOKIE_CSRF_PROTECT = False
     JWT_CSRF_IN_COOKIES = False
