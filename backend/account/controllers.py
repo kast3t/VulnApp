@@ -1,4 +1,5 @@
 from app import db
+from config import Config
 from error_handler import APIUnauthorizedError, APINotFoundError
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies, \
@@ -16,12 +17,12 @@ def register_my_account_controller():
     db.session.add(new_user)
     db.session.commit()
 
-    access_token = create_access_token(identity=new_user.id, additional_claims={"claims": new_user.get_claims()})
-    refresh_token = create_refresh_token(identity=new_user.id)
+    access_token = create_access_token(identity=str(new_user.id), additional_claims={"claims": new_user.get_claims()})
+    refresh_token = create_refresh_token(identity=str(new_user.id))
 
     response = jsonify(User.query.get(new_user.id).to_dict())
-    set_access_cookies(response, access_token)
-    set_refresh_cookies(response, refresh_token)
+    set_access_cookies(response, access_token, max_age=Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds())
+    set_refresh_cookies(response, refresh_token, max_age=Config.JWT_REFRESH_TOKEN_EXPIRES.total_seconds())
 
     return response
 
@@ -37,12 +38,12 @@ def login_my_account_controller():
     if not user.authenticate(request_data["password"]):
         raise APIUnauthorizedError("Email or password is incorrect")
 
-    access_token = create_access_token(identity=user.id, additional_claims={"claims": user.get_claims()})
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id), additional_claims={"claims": user.get_claims()})
+    refresh_token = create_refresh_token(identity=str(user.id))
 
     response = jsonify(User.query.get(user.id).to_dict())
-    set_access_cookies(response, access_token)
-    set_refresh_cookies(response, refresh_token)
+    set_access_cookies(response, access_token, max_age=Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds())
+    set_refresh_cookies(response, refresh_token, max_age=Config.JWT_REFRESH_TOKEN_EXPIRES.total_seconds())
 
     return response
 
@@ -70,10 +71,10 @@ def update_my_account_controller():
 def refresh_my_token_controller():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
-    access_token = create_access_token(identity=user_id, additional_claims={"claims": user.get_claims()})
+    access_token = create_access_token(identity=str(user_id), additional_claims={"claims": user.get_claims()})
 
     response = jsonify({"msg": "Access token successfuly refreshed"})
-    set_access_cookies(response, access_token)
+    set_access_cookies(response, access_token, max_age=Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds())
 
     return response
 
