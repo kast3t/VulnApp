@@ -32,7 +32,7 @@ class User(db.Model):
     def validate_email(self, key, email):
         if not email:
             raise APIDataValidateError("Email address not specified")
-        if not re.match("[^@]+@[^@]+\.[^@]+", email):
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             raise APIDataValidateError("Specified email is not an email address")
         if User.query.filter(User.email == email).first():
             raise APIConflictError("Email is already in use")
