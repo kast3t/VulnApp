@@ -50,7 +50,10 @@ def login_my_account_controller():
 
 def retrieve_my_account_controller():
     user_id = get_jwt_identity()
-    response = User.query.get(user_id).to_dict()
+    user = User.query.get(user_id)
+    if not user:
+        raise APIUnauthorizedError("User from token not found")
+    response = user.to_dict()
 
     return jsonify(response)
 
@@ -60,6 +63,8 @@ def update_my_account_controller():
     request_args = request.args.to_dict()
 
     user = User.query.get(user_id)
+    if not user:
+        raise APIUnauthorizedError("User from token not found")
     for key, value in request_args.items():
         setattr(user, key, value)
     db.session.commit()
@@ -71,6 +76,8 @@ def update_my_account_controller():
 def refresh_my_token_controller():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
+    if not user:
+        raise APIUnauthorizedError("User from token not found")
     access_token = create_access_token(identity=str(user_id), additional_claims={"claims": user.get_claims()})
 
     response = jsonify({"msg": "Access token successfuly refreshed"})

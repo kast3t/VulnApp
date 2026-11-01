@@ -7,6 +7,7 @@ from app import create_app, db
 from articles.models import Article
 from comments.models import Comment
 from flask_migrate import upgrade, migrate, init, stamp
+from sqlalchemy import text
 from users.models import User
 
 
@@ -39,13 +40,16 @@ def get_content_from_file(path: str):
 
 def deploy():
     """
-    Инициализируем БД, мигрируя из ORM в БД PG. Файл manage.py необходимо запустить при первом запуске контейнера.
-    В Docker-е зайти в контейнер "backend-1", вкладка "Exec", ввести команду: "python3.12 manage.py"
+    Пересоздаём и заполняем БД, мигрируя из ORM в БД PG. Запускается из entrypoint.sh при каждом старте контейнера.
+    Вручную: docker compose exec backend sh -c "rm -rf /backend/migrations && python3.12 manage.py"
     """
 
     app = create_app(os.getenv("CONFIG_MODE"))
     app.app_context().push()
-    db.drop_all()
+    # Фикс, пересоздаём схему целиком: drop_all() не удалит alembic_version и прочие таблицы
+    db.session.execute(text("DROP SCHEMA public CASCADE"))
+    db.session.execute(text("CREATE SCHEMA public"))
+    db.session.commit()
     db.create_all()
 
     users_dict = json.loads(get_content_from_file("/txt/users.json"))

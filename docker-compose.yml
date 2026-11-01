@@ -10,7 +10,7 @@ services:
         condition: service_healthy
     env_file:
       - ./backend/.env
-    restart: 'on-failure'
+    restart: 'unless-stopped'
   db:
     env_file:
       - ./backend/.env
@@ -22,7 +22,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 24
-    restart: 'on-failure'
+    restart: 'unless-stopped'
   nginx-frontend:
     build:
       context: '.'
@@ -33,7 +33,7 @@ services:
       - pgadmin
     ports:
       - "80:80"
-    restart: 'on-failure'
+    restart: 'unless-stopped'
   pgadmin:
     depends_on:
       db:
@@ -44,7 +44,7 @@ services:
     networks:
       default:
         ipv4_address: 172.172.0.52
-    restart: 'on-failure'
+    restart: 'unless-stopped'
 
 networks:
   default:

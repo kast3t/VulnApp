@@ -1,5 +1,6 @@
 from app import app
 from flask import jsonify
+from werkzeug.exceptions import HTTPException
 
 
 class APIError(Exception):
@@ -52,7 +53,7 @@ class APIConflictError(APIError):
 
 @app.errorhandler(Exception)
 def handle_exception(err):
-    if hasattr(err, "name"):
+    if isinstance(err, (APIError, HTTPException)):
         errName = err.name
         errCode = err.code
     else:
